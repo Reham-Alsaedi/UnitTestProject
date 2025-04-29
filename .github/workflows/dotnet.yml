@@ -27,7 +27,7 @@ jobs:
     - name: Build
       run: dotnet build UnitTestProject --no-restore
 
-    - name: Run Tests and Generate Results
+    - name: Run Tests and Generate .trx Result
       run: |
         mkdir -p TestResults
         dotnet test ./UnitTestProject.Test/UnitTestProject.Test.csproj \
@@ -35,8 +35,11 @@ jobs:
           --logger "trx;LogFileName=test_results.trx" \
           --results-directory TestResults
 
-    - name: Upload Test Results
-      uses: actions/upload-artifact@v4
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
       with:
-        name: test-results
-        path: TestResults
+        files: TestResults/*.trx
+
+
+
