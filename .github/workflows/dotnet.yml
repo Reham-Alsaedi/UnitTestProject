@@ -31,17 +31,14 @@ jobs:
     - name: Build
       run: dotnet build UnitTestProject --no-restore
 
-    - name: Create TestResults Directory
-      run: mkdir -p TestResults
-
-    - name: Run Tests and Generate TRX
-      run: dotnet test ./UnitTestProject.Test/UnitTestProject.Test.csproj --filter "Category!=Integration" --logger "trx;LogFileName=TestResults/test_results.trx" --verbosity normal
+    - name: Test
+      run: dotnet test ./UnitTestProject.Test/UnitTestProject.Test.csproj --filter "Category!=Integration" --verbosity normal --logger "trx;LogFileName=xtest.trx" --results-directory "TestResults"
 
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
-      with:
-        trx_files: TestResults/*.trx
+      with:       
+        trx_files: UnitTestProject.Test/TestResults/xtest.trx
 
 
 
