@@ -34,11 +34,18 @@ jobs:
     - name: Test
       run: dotnet test ./UnitTestProject.Test/UnitTestProject.Test.csproj --filter "Category!=Integration" --verbosity normal
 
+    - name: Create TestResults Directory
+    run: mkdir -p TestResults
+
+    - name: Run Tests
+    run: dotnet test ./UnitTestProject.Test/UnitTestProject.Test.csproj --logger "trx;LogFileName=TestResults/test_results.trx"
+
     - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action@v2
-      if: always()
-      with:
-        trx_files: TestResults/*.trx
+    uses: EnricoMi/publish-unit-test-result-action@v2
+    if: always()
+    with:
+      trx_files: TestResults/*.trx
+
 
 
 
