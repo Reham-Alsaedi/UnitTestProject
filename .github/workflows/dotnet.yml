@@ -9,6 +9,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  checks: write
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,19 +31,15 @@ jobs:
     - name: Build
       run: dotnet build UnitTestProject --no-restore
 
-    - name: Run Tests and Generate .trx Result
-      run: |
-        mkdir -p TestResults
-        dotnet test ./UnitTestProject.Test/UnitTestProject.Test.csproj \
-          --filter "Category!=Integration" \
-          --logger "trx;LogFileName=test_results.trx" \
-          --results-directory TestResults
+    - name: Test
+      run: dotnet test ./UnitTestProject.Test/UnitTestProject.Test.csproj --filter "Category!=Integration" --verbosity normal
 
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
-        files: TestResults/*.trx
+        trx_files: TestResults/*.trx
+
 
 
 
